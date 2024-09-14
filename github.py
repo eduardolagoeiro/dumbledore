@@ -75,3 +75,22 @@ def is_github_connected():
 def disconnect_github():
     keyring.delete_password(KEYRING_SERVICE_NAME, "github_access_token")
     print("Disconnected from GitHub.")
+
+def get_github_repositories():
+    access_token = keyring.get_password(KEYRING_SERVICE_NAME, "github_access_token")
+    if not access_token:
+        print("GitHub is not connected.")
+        return []
+
+    headers = {
+        "Authorization": f"token {access_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    response = requests.get("https://api.github.com/user/repos", headers=headers)
+
+    if response.status_code == 200:
+        repos = response.json()
+        return [repo["name"] for repo in repos]
+    else:
+        print(f"Error fetching repositories: {response.status_code}")
+        return []

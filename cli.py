@@ -5,9 +5,11 @@ from github import (
     connect_github,
     is_github_connected,
     disconnect_github,
+    get_github_repositories,
 )
 
-GITHUB_CONFIGURATION = "GitHub Configuration"
+LIST_REPOSITORIES = "List Repositories"
+GITHUB_CONFIGURATION = "GitHub"
 CONNECT_GITHUB = "Connect GitHub Account"
 DISCONNECT_GITHUB = "Disconnect GitHub Account"
 BACK_MAIN_MENU = "Back to Main Menu"
@@ -35,17 +37,29 @@ def main_menu():
         elif choice == EXIT:
             print("Exiting the application.")
             sys.exit(0)
+            
+def list_and_select_repositories():
+    repos = get_github_repositories()
+    if not repos:
+        print("No repositories available or an error occurred.")
+        return
+
+    repo_choice = select("Select a repository:", choices=repos).ask()
+    print(f"You selected: {repo_choice}")
 
 def github_config_menu():
     while True:
         choices = [
+            LIST_REPOSITORIES,
             DISCONNECT_GITHUB,
             BACK_MAIN_MENU
         ]
 
-        choice = select("GitHub Configuration:", choices=choices).ask()
+        choice = select("GitHub:", choices=choices).ask()
 
-        if choice == DISCONNECT_GITHUB:
+        if choice == LIST_REPOSITORIES:
+            list_and_select_repositories()
+        elif choice == DISCONNECT_GITHUB:
             disconnect_github()
         elif choice == BACK_MAIN_MENU:
             break
