@@ -1,3 +1,4 @@
+# database.py
 import lancedb
 from lancedb.embeddings import get_registry
 from lancedb.pydantic import LanceModel, Vector

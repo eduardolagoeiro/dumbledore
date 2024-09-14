@@ -6,9 +6,15 @@ from github import (
     is_github_connected,
     disconnect_github,
     get_github_repositories,
+    get_repository_branches,
+    get_repository_files
 )
 
-LIST_REPOSITORIES = "List Repositories"
+from database import (
+    create_entry
+)
+
+LIST_REPOSITORIES = "List Repositories and Embed Files"
 GITHUB_CONFIGURATION = "GitHub"
 CONNECT_GITHUB = "Connect GitHub Account"
 DISCONNECT_GITHUB = "Disconnect GitHub Account"
@@ -43,9 +49,34 @@ def list_and_select_repositories():
     if not repos:
         print("No repositories available or an error occurred.")
         return
-
-    repo_choice = select("Select a repository:", choices=repos).ask()
+    
+    repo_choice = select("Select a repository to embed files:", choices=repos).ask()
     print(f"You selected: {repo_choice}")
+    
+    branches = get_repository_branches(repo_choice)
+    if not branches:
+        print(f"No branches found for repository {repo_choice}.")
+        return
+    
+    branch_choice = select("Select a branch:", choices=branches).ask()
+    print(f"You selected branch: {branch_choice}")
+    
+    embed_repository_files(repo_choice, branch_choice)
+    
+def embed_repository_files(repo_name, branch):
+    print(f"Embedding files from repository: {repo_name}, branch: {branch}")
+    files = get_repository_files(repo_name, branch)
+    
+    if not files:
+        print(f"No files found in repository {repo_name} on branch {branch} or an error occurred.")
+        return
+
+    for file in files:
+        file_path = file['path']
+        file_content = file['content']
+        key = f"{repo_name}/{branch}/{file_path}"
+        create_entry(key, file_content)
+        print(f"Embedded: {key}")
 
 def github_config_menu():
     while True:

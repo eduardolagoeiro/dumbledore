@@ -3,6 +3,7 @@ import requests
 import keyring
 import time
 import questionary
+import base64
 from urllib.parse import parse_qs
 
 CLIENT_ID = "Ov23lir7Vw2PEEOQSk7h"
@@ -90,7 +91,66 @@ def get_github_repositories():
 
     if response.status_code == 200:
         repos = response.json()
-        return [repo["name"] for repo in repos]
+        return [f"{repo['owner']['login']}/{repo['name']}" for repo in repos]
     else:
         print(f"Error fetching repositories: {response.status_code}")
         return []
+    
+def get_repository_branches(repo_name):
+    access_token = keyring.get_password(KEYRING_SERVICE_NAME, "github_access_token")
+    if not access_token:
+        print("GitHub is not connected.")
+        return []
+
+    headers = {
+        "Authorization": f"token {access_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+
+    url = f"https://api.github.com/repos/{repo_name}/branches"
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        branches = response.json()
+        return [branch["name"] for branch in branches]
+    else:
+        print(f"Error fetching branches for repository {repo_name}: {response.status_code}")
+        return []
+    
+def get_repository_files(repo_name, branch):
+    access_token = keyring.get_password(KEYRING_SERVICE_NAME, "github_access_token")
+    if not access_token:
+        print("GitHub is not connected.")
+        return []
+
+    headers = {
+        "Authorization": f"token {access_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    url = f"https://api.github.com/repos/{repo_name}/contents?ref={branch}"
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        files = response.json()
+        file_data = []
+        for file in files:
+            if file["type"] == "file":
+                file_content = get_file_content(repo_name, file["path"], headers, branch)
+                file_data.append({"path": file["path"], "content": file_content})
+        return file_data
+    else:
+        print(f"Error fetching repository files: {response.status_code}")
+        return []
+
+def get_file_content(repo_name, file_path, headers, branch):
+    url = f"https://api.github.com/repos/{repo_name}/contents/{file_path}?ref={branch}"
+    response = requests.get(url, headers=headers)
+
+    if response.status_code == 200:
+        file_content_encoded = response.json().get("content", "")
+        file_content_decoded = base64.b64decode(file_content_encoded).decode('utf-8')
+        return file_content_decoded
+    else:
+        print(f"Error fetching file content for {file_path} on branch {branch}: {response.status_code}")
+        return ""
