@@ -61,6 +61,7 @@ def github_config_menu():
             list_and_select_repositories()
         elif choice == DISCONNECT_GITHUB:
             disconnect_github()
+            break
         elif choice == BACK_MAIN_MENU:
             break
 
