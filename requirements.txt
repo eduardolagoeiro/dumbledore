@@ -1,0 +1,7 @@
+questionary
+requests
+lancedb
+sentence-transformers
+keyring
+pandas
+webbrowser
