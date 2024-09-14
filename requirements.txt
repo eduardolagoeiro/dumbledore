@@ -4,4 +4,4 @@ lancedb
 sentence-transformers
 keyring
 pandas
-webbrowser
+cffi
