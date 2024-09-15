@@ -81,8 +81,11 @@ def embed_repository_files(repo_name, branch):
         file_path = file['path']
         file_content = file['content']
         key = f"{repo_name}/{branch}/{file_path}"
-        create_entry(key, file_content)
-        print(f"Embedded: {key}")
+        entry, err = create_entry(key, file_content, True)
+        if err:
+            print(f"Error: {err}")
+        else:
+            print(f"Embedded: {key}")
 
 def github_config_menu():
     while True:

@@ -37,7 +37,6 @@ def create_entry(key, text, upsert=False):
     table = get_table()
     result = find_by_key(key)
     if len(result) > 0 and not upsert:
-        print(result[0].key)
         return None, f"Key '{key}' already exists."
     
     entry = {
