@@ -9,5 +9,7 @@ services:
     runtime: nvidia
     environment:
       NVIDIA_VISIBLE_DEVICES: all
+    volumes:
+      - ./ollama:/root/.ollama
     ports:
       - "11434:11434"
