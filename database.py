@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore", category=FutureWarning, module="transformers.t
 LANCEDB_PATH = "./lancedb"
 COLLECTION_NAME = "knowledge_vectors"
 
-model = get_registry().get("colbert").create(name="colbert-ir/colbertv2.0")
+model = get_registry().get("ollama").create(name="nomic-embed-text")
 
 class TextModel(LanceModel):
     key: str

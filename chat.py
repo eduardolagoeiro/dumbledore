@@ -7,6 +7,8 @@ OLLAMA_URL = "http://localhost:11434/api/generate"
 def send_message(prompt):
     retrieved_docs = find_by_text(prompt)
     
+    print(f"docs: {len(retrieved_docs)}, {', '.join(map(lambda x: x.key, retrieved_docs))}")
+    
     if retrieved_docs:
         retrieved_texts = "\n".join([doc.text for doc in retrieved_docs])
         augmented_prompt = f"Context:\n{retrieved_texts}\n\nQuestion: {prompt}"
@@ -14,7 +16,7 @@ def send_message(prompt):
         augmented_prompt = prompt
 
     payload = {
-        "model": "llama2",
+        "model": "llama3.1",
         "prompt": augmented_prompt
     }
 

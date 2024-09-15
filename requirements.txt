@@ -1,10 +1,7 @@
 questionary
 requests
 lancedb
-sentence-transformers
 keyring
 pandas
 cffi
 ollama
-nltk
-tantivy

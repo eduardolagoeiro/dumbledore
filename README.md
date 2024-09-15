@@ -4,7 +4,7 @@ This project is a Python CLI that interacts with a local Ollama instance to run 
 
 ## Requirements
 
-- Python 3.8
+- Python 3.10
 - Docker
 - Docker Compose
 - Ollama
@@ -23,7 +23,7 @@ cd dumbledore
 Create and activate the virtual environment using Python 3.8:
 
 ```bash
-python3.8 -m venv venv
+python -m venv venv
 source venv/bin/activate  # On macOS/Linux
 # or
 venv\Scripts\activate  # On Windows
