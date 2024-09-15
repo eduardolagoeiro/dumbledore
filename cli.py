@@ -9,11 +9,12 @@ from github import (
     get_repository_branches,
     get_repository_files
 )
-
+from chat import send_message
 from database import (
     create_entry
 )
 
+CHAT_OPTION = "Chat with AI"
 LIST_REPOSITORIES = "List Repositories and Embed Files"
 GITHUB_CONFIGURATION = "GitHub"
 CONNECT_GITHUB = "Connect GitHub Account"
@@ -23,27 +24,32 @@ EXIT = "Exit"
 
 def main_menu():
     while True:
-        if is_github_connected():
-            choices = [
-                GITHUB_CONFIGURATION,
-                EXIT
-            ]
-        else:
-            choices = [
-                CONNECT_GITHUB,
-                EXIT
-            ]
-
+        choices = [
+            CHAT_OPTION,
+            GITHUB_CONFIGURATION if is_github_connected() else CONNECT_GITHUB,
+            EXIT
+        ]
         choice = select("Main Menu:", choices=choices).ask()
 
         if choice == CONNECT_GITHUB:
             connect_github()
         elif choice == GITHUB_CONFIGURATION:
             github_config_menu()
+        elif choice == CHAT_OPTION:
+            chat_with_ai()
         elif choice == EXIT:
             print("Exiting the application.")
             sys.exit(0)
-            
+
+def chat_with_ai():
+    print("Starting chat with AI. Type 'exit' to return to the main menu.")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == "exit":
+            print("Returning to the main menu.")
+            break
+        print(f"AI: {send_message(user_input)}")
+
 def list_and_select_repositories():
     repos = get_github_repositories()
     if not repos:
