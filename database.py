@@ -61,6 +61,6 @@ def find_by_key(key):
 
 def find_by_text(text):
     table = get_table()
-    result = table.search(text).limit(1).to_pydantic(TextModel)
+    result = table.search(text).limit(5).to_pydantic(TextModel)
     return result
 

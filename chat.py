@@ -1,12 +1,21 @@
+from database import find_by_text
 import requests
 import json
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
 
 def send_message(prompt):
+    retrieved_docs = find_by_text(prompt)
+    
+    if retrieved_docs:
+        retrieved_texts = "\n".join([doc.text for doc in retrieved_docs])
+        augmented_prompt = f"Context:\n{retrieved_texts}\n\nQuestion: {prompt}"
+    else:
+        augmented_prompt = prompt
+
     payload = {
         "model": "llama2",
-        "prompt": prompt
+        "prompt": augmented_prompt
     }
 
     try:
